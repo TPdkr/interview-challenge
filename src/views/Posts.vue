@@ -3,9 +3,11 @@
   import { onBeforeMount, ref } from 'vue';
 
   const posts = ref<Post[]>();
+  //a new object to store the posts to be displayed
   let displayedPosts = ref<Post[]>();
+  //the key variables that determine the page
   let page=0;
-  const pageSize=3;
+  const pageSize=3;//smaller on purpose in order to show proper button row behaviour
   let pageCount=0;
 
 
@@ -14,7 +16,9 @@
         //we calculate page count based on data and create buttons
         const count = posts.value.length;
         pageCount = Math.ceil(count/pageSize);
+        //call to create button row for pages
         fillButtonRow();
+        //we determine which posts to show initially
         displayedPosts.value = posts.value.slice(0, pageSize);
         });  
     });
@@ -23,7 +27,7 @@
     posts.value = (await getPosts()).posts;
   }
 
-  /**this function assembles the button row*/
+  /**this function assembles the button row and makes it interactive*/
   function fillButtonRow(){
     const btnRow = document.querySelector(".js-page-switch-row");
     //check for existence
@@ -55,12 +59,10 @@
       btns.forEach(button => {
         button.addEventListener("click",()=>{
           //we change the page
-          const newPage = button.dataset.page;
-          page=newPage;
+          page= button.dataset.page;
           //we rerun this function
           fillButtonRow();
           displayedPosts.value = posts.value.slice(page*pageSize,page*pageSize+pageSize);
-          //console.log(`start: ${page*pageSize} end: ${(page)*pageSize+pageSize} page: ${page} pageSize: ${pageSize}`)
         });
       });
     } else {
@@ -112,6 +114,7 @@
     display: flex;
     flex-direction: row;
     justify-items: flex-start;
+    margin-bottom: 20px;
   }
 
   .js-page-switch-row:deep(.page-button){
